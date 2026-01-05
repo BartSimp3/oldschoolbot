@@ -103,20 +103,16 @@ class GeImageGeneratorSingleton {
 		ctx.translate(5, 75);
 
 		const maxWidth = progressShadowImage.width;
-		ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		let percentFullfilled = calcWhatPercent(
-			listing.total_quantity - listing.quantity_remaining,
-			listing.total_quantity
-		);
-		if (listing.type === 'Sell') {
-			percentFullfilled = 100 - percentFullfilled;
-		}
-		const progressWidth = calcPercentOfNum(percentFullfilled, maxWidth);
-		if (percentFullfilled === 100) {
-			ctx.fillStyle = OSRSCanvas.COLORS.DARK_GREEN;
-		} else {
-			ctx.fillStyle = OSRSCanvas.COLORS.ORANGE;
-		}
+
+		// how many items have been completed (bought or sold)
+		const completed = listing.total_quantity - listing.quantity_remaining;
+
+		// percent complete (0 → 100)
+		const percentFulfilled = calcWhatPercent(completed, listing.total_quantity);
+
+		const progressWidth = calcPercentOfNum(percentFulfilled, maxWidth);
+
+		ctx.fillStyle = percentFulfilled === 100 ? OSRSCanvas.COLORS.DARK_GREEN : OSRSCanvas.COLORS.ORANGE;
 
 		ctx.fillRect(0, 0, progressWidth, progressShadowImage.height);
 		ctx.drawImage(progressShadowImage, 0, 0, progressShadowImage.width, progressShadowImage.height);
